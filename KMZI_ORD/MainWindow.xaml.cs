@@ -71,8 +71,6 @@ namespace KMZI_ORD
                         buf[j] = numOnMod(buf[j], mod);
                     }
                 }
-
-                //buf.Reverse();
                 K1 = buf;
             }
             string s = "Коэффициенты многочлена: ";
