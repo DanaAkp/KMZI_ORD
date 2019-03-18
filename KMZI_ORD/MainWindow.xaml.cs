@@ -31,8 +31,6 @@ namespace KMZI_ORD
             {
                 tblResult.Text = "";
                 int p = int.Parse(tbMod.Text.Trim());
-                //int n1 = int.Parse(tbN.Text.Trim());
-                //int n2 = int.Parse(tbN2.Text.Trim());
 
                 int[] Koeff1 = GetVector(tbKoeff.Text.Trim().Split());//старший коэфф стоит последний, то есть его индекс обозначает его степень
                 int[] Koeff2 = GetVector(tbKoeff2.Text.Trim().Split());
@@ -52,36 +50,38 @@ namespace KMZI_ORD
         }
         private string DivisionPolinom(int[] K1,int[] K2, int mod)
         {
+          //  int deg = K1.Length - 1;
             int[] result = new int[(K1.Length - 1) - (K2.Length - 1) + 1];
             if (K2.Length > K1.Length) throw new Exception("Степень делимого многочлена должна быть выше делителя!");
             for(int i = K1.Length - 1; i >= 0; i--)
             {
-                int[] buf = new int[K1.Length - 1];
-                if (i - (K2.Length - 1) >= 0)
+                int[] buf = new int[K1.Length];
+                if (i >= K2.Length - 1)
                 {
                     result[i - (K2.Length - 1)] = K1[i];//разобраться с индексом, тк в рес должно быть меньше i
-                   // int c = K2.Length - 1;
-                    for(int j = K1.Length - 2; j >= (i - (K2.Length - 1)); j--)
+                    
+                    for (int k = 0; k < K2.Length; k++)
                     {
-                        buf[j] = K2[j - (i - (K2.Length - 1))] * result[i - (K2.Length - 1)];
+                        buf[i - (K2.Length - 1) + k] = result[i - (K2.Length - 1)] * K2[k];
                     }
-                    for (int j = K1.Length - 2; j > 0; j--)
+                    for (int j = K1.Length - 1; j >= 0; j--)
                     {
                         buf[j] = K1[j] - buf[j];
                         buf[j] = numOnMod(buf[j], mod);
                     }
+                    K1 = buf;//deg = i + K2.Length - 1;
                 }
-                K1 = buf;
             }
             string s = "Коэффициенты многочлена: ";
             Array.Reverse(result);
-            for(int i = 0; i < result.Length; i++)
+            Array.Reverse(K1);
+            for (int i = 0; i < result.Length; i++)
             {
                 s += result[i] + " ";
             }
             s += "\nКоэффициенты остатка: ";
             for (int i = 0; i < K1.Length; i++)
-                s += K1[i];
+                s += K1[i] + " ";
             return s;
         }
         private int numOnMod(int num,int mod)

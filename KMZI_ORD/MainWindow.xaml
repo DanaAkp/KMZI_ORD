@@ -31,6 +31,7 @@
             <TextBox x:Name="tbKoeff2" Width="255"/>
             <Button x:Name="btn" Content="OK" Width="30" Click="Btn_Click" Margin="10,0"/>
         </StackPanel>
+        <Label Content="(ввод коэфф начинается со старшего члена)" Grid.Row="4"/>
         <TextBlock x:Name="tblResult" Grid.RowSpan="2" Grid.Row="5" Background="LightBlue"/>
     </Grid>
 </Window>
