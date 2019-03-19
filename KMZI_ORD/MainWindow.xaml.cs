@@ -86,7 +86,7 @@ namespace KMZI_ORD
             return e;
         }
         
-        private int[] GetVector(string[] s)
+        static private int[] GetVector(string[] s)
         {
             int[] ls = new int[s.Length];
             for(int i = s.Length - 1; i >= 0; i--)
