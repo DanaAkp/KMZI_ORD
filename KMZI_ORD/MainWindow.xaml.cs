@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using KMZI_lib;
+using KMZI_lib_int;
 
 namespace KMZI_ORD
 {
@@ -43,56 +43,49 @@ namespace KMZI_ORD
         {
             int d = (int)Math.Pow(mod, K.Length - 1) - 1;
             List<int> forNOK = new List<int>();
-            Dictionary<int, int> f = Factorization(d);
+            Dictionary<int, int> f = KMZI_int.Factorization(d);
+            if (f.Count == 1) return d;
             foreach(KeyValuePair<int,int> x in f)
             {
                 int[] k1 = new int[d / (int)Math.Pow(x.Key, 1) + 1];
-                if (ModPolinom(k1, K, mod) != new int[1] { 1 })
-                {
+                k1[k1.Length - 1] = 1;
+                if (K.Length > k1.Length)
                     forNOK.Add((int)Math.Pow(x.Key, x.Value));
-                    break;
-                }
-                else for (int i = 2; i < x.Value; i++)
+                else
+                {
+                    int[] res = ModPolinom(k1, K, mod);int counter = 0;
+                    for (int i = 1; i < res.Length; i++) if (res[i] != 0) counter++; 
+                    
+                    if (counter!=0 || res[0]!=1)
                     {
-                        k1 = new int[d / (int)Math.Pow(x.Key, i) + 1];
-                        if (ModPolinom(k1, K, mod) != new int[1] { 1 })
-                        {
-                            forNOK.Add((int)Math.Pow(x.Key, x.Value - i));
-                            break;
-                        }
+                        forNOK.Add((int)Math.Pow(x.Key, x.Value));
                     }
+                    else
+                        for (int i = 2; i <= x.Value; i++)
+                        {
+                            k1 = new int[d / (int)Math.Pow(x.Key, i) + 1];
+                            res = ModPolinom(k1, K, mod); counter = 0;
+                            for (int j = 1; j < res.Length; j++) if (res[j] != 0) counter++;
+
+                            if (counter != 0 || res[0] != 1)
+                            {
+                                forNOK.Add((int)Math.Pow(x.Key, x.Value - 1));
+                            }
+                        }
+                }
+                
 
             }
             int e = d;
             if (forNOK.Count == 1) e = forNOK[0];
             if (forNOK.Count > 1)
             {
-                e = NOK(forNOK[0], forNOK[1]);
-                for (int i = 2; i < forNOK.Count; i++) e = NOK(e, forNOK[i]);
+                e = KMZI_int.NOK(forNOK[0], forNOK[1]);
+                for (int i = 2; i < forNOK.Count; i++) e = KMZI_int.NOK(e, forNOK[i]);
             }
             return e;
         }
-
-        private Dictionary<int, int> Factorization(int num)
-        {
-            Dictionary<int, int> dic = new Dictionary<int, int>();
-
-            for(int i = 2; i <= num; i++)
-            {
-                if (Class1.CheckForSimplicity(i) && num%i==0)
-                {
-                    int c = 0;
-                    while (num % i == 0)  { num /= i; c++; }
-                    dic.Add(i, c);
-                }
-            }
-
-            return dic;
-        }
-        private int NOK(int m,int n)
-        {
-            return m * n / (int)Class1.NOD(m, n);
-        }
+        
         private int[] GetVector(string[] s)
         {
             int[] ls = new int[s.Length];
@@ -103,47 +96,11 @@ namespace KMZI_ORD
             Array.Reverse(ls, 0, ls.Length);
             return ls;
         }
-        private int[] DivisionPolinom(int[] K1,int[] K2, int mod)
-        {
-          //  int deg = K1.Length - 1;
-            int[] result = new int[(K1.Length - 1) - (K2.Length - 1) + 1];
-            if (K2.Length > K1.Length) throw new Exception("Степень делимого многочлена должна быть выше делителя!");
-            for(int i = K1.Length - 1; i >= 0; i--)
-            {
-                int[] buf = new int[K1.Length];
-                if (i >= K2.Length - 1)
-                {
-                    result[i - (K2.Length - 1)] = K1[i];//разобраться с индексом, тк в рес должно быть меньше i
-                    
-                    for (int k = 0; k < K2.Length; k++)
-                    {
-                        buf[i - (K2.Length - 1) + k] = result[i - (K2.Length - 1)] * K2[k];
-                    }
-                    for (int j = K1.Length - 1; j >= 0; j--)
-                    {
-                        buf[j] = K1[j] - buf[j];
-                        buf[j] = numOnMod(buf[j], mod);
-                    }
-                    K1 = buf;//deg = i + K2.Length - 1;
-                }
-            }
-            Array.Reverse(result);
-            Array.Reverse(K1);
-            //string s = "Коэффициенты многочлена: ";
-            //for (int i = 0; i < result.Length; i++)
-            //{
-            //    s += result[i] + " ";
-            //}
-            //s += "\nКоэффициенты остатка: ";
-            //for (int i = 0; i < K1.Length; i++)
-            //    s += K1[i] + " ";
-            return result;
-        }
         private int[] ModPolinom(int[] K1, int[] K2, int mod)
         {
             //  int deg = K1.Length - 1;
-            int[] result = new int[(K1.Length - 1) - (K2.Length - 1) + 1];
             if (K2.Length > K1.Length) throw new Exception("Степень делимого многочлена должна быть выше делителя!");
+            int[] result = new int[(K1.Length - 1) - (K2.Length - 1) + 1];
             for (int i = K1.Length - 1; i >= 0; i--)
             {
                 int[] buf = new int[K1.Length];
@@ -158,13 +115,12 @@ namespace KMZI_ORD
                     for (int j = K1.Length - 1; j >= 0; j--)
                     {
                         buf[j] = K1[j] - buf[j];
-                        buf[j] = numOnMod(buf[j], mod);
+                        buf[j] = KMZI_int.numOnMod(buf[j], mod);
                     }
                     K1 = buf;//deg = i + K2.Length - 1;
                 }
             }
             Array.Reverse(result);
-            Array.Reverse(K1);
             //string s = "Коэффициенты многочлена: ";
             //for (int i = 0; i < result.Length; i++)
             //{
@@ -174,12 +130,6 @@ namespace KMZI_ORD
             //for (int i = 0; i < K1.Length; i++)
             //    s += K1[i] + " ";
             return K1;
-        }
-        private int numOnMod(int num,int mod)
-        {
-            while (num < 0) num += mod;
-            while (num > mod) num -= mod;
-            return num;
         }
     }
 }

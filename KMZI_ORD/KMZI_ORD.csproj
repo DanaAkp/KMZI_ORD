@@ -35,8 +35,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="KMZI_lib">
+    <Reference Include="KMZI_lib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\KMZI_lib\KMZI_lib\bin\Debug\KMZI_lib.dll</HintPath>
+    </Reference>
+    <Reference Include="KMZI_lib_int">
+      <HintPath>..\..\KMZI_lib_int\KMZI_lib_int\bin\Debug\KMZI_lib_int.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
