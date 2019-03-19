@@ -46,15 +46,22 @@ namespace KMZI_ORD
             Dictionary<int, int> f = Factorization(d);
             foreach(KeyValuePair<int,int> x in f)
             {
-                for (int i = 0; i < x.Value; i++)
+                int[] k1 = new int[d / (int)Math.Pow(x.Key, 1) + 1];
+                if (ModPolinom(k1, K, mod) != new int[1] { 1 })
                 {
-                    int[] k1 = new int[d / (int)Math.Pow(x.Key, i) + 1];
-                    if (ModPolinom(k1, K, mod) == new int[1] { 1 })
-                    {
-                        forNOK.Add((int)Math.Pow(x.Key, x.Value));
-                        break;
-                    }
+                    forNOK.Add((int)Math.Pow(x.Key, x.Value));
+                    break;
                 }
+                else for (int i = 2; i < x.Value; i++)
+                    {
+                        k1 = new int[d / (int)Math.Pow(x.Key, i) + 1];
+                        if (ModPolinom(k1, K, mod) != new int[1] { 1 })
+                        {
+                            forNOK.Add((int)Math.Pow(x.Key, x.Value - i));
+                            break;
+                        }
+                    }
+
             }
             int e = d;
             if (forNOK.Count == 1) e = forNOK[0];
