@@ -44,7 +44,10 @@ namespace KMZI_ORD
             int d = (int)Math.Pow(mod, K.Length - 1) - 1;
             List<int> forNOK = new List<int>();
             Dictionary<int, int> f = KMZI_int.Factorization(d);
-            if (f.Count == 1) return d;
+            if (f.Count == 1 && f.ElementAt(0).Value == 1)
+            {
+                return d;
+            }
             foreach(KeyValuePair<int,int> x in f)
             {
                 int[] k1 = new int[d / (int)Math.Pow(x.Key, 1) + 1];
