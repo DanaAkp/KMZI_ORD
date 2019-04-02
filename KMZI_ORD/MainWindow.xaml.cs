@@ -50,7 +50,7 @@ namespace KMZI_ORD
             }
             foreach(KeyValuePair<int,int> x in f)
             {
-                int[] k1 = new int[d / (int)Math.Pow(x.Key, 1) + 1];
+                int[] k1 = new int[d / x.Key + 1];
                 k1[k1.Length - 1] = 1;
                 if (K.Length > k1.Length)
                     forNOK.Add((int)Math.Pow(x.Key, x.Value));
@@ -67,6 +67,7 @@ namespace KMZI_ORD
                         for (int i = 2; i <= x.Value; i++)
                         {
                             k1 = new int[d / (int)Math.Pow(x.Key, i) + 1];
+                            k1[k1.Length - 1] = 1;
                             res = ModPolinom(k1, K, mod); counter = 0;
                             for (int j = 1; j < res.Length; j++) if (res[j] != 0) counter++;
 
