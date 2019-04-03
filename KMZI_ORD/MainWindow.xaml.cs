@@ -41,6 +41,9 @@ namespace KMZI_ORD
 
         private int GetOrd_f(int[] K,int mod)
         {
+            int[] vs = new int[]{ mod-1,1};
+            int[] vc = ModPolinom(vs, K, mod);
+            if (K.Length == 2 && vc[0]==0 && vc[1]==0) return 1;
             int d = (int)Math.Pow(mod, K.Length - 1) - 1;
             List<int> forNOK = new List<int>();
             Dictionary<int, int> f = KMZI_int.Factorization(d);
