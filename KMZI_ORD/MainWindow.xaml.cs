@@ -42,8 +42,11 @@ namespace KMZI_ORD
         private int GetOrd_f(int[] K,int mod)
         {
             int[] vs = new int[]{ mod-1,1};
-            int[] vc = ModPolinom(vs, K, mod);
-            if (K.Length == 2 && vc[0]==0 && vc[1]==0) return 1;
+            if (vs.Length >= K.Length)
+            {
+                int[] vc = ModPolinom(vs, K, mod);
+                if (K.Length == 2 && vc[0] == 0 && vc[1] == 0) return 1;
+            }
             int d = (int)Math.Pow(mod, K.Length - 1) - 1;
             List<int> forNOK = new List<int>();
             Dictionary<int, int> f = KMZI_int.Factorization(d);
@@ -71,12 +74,17 @@ namespace KMZI_ORD
                         {
                             k1 = new int[d / (int)Math.Pow(x.Key, i) + 1];
                             k1[k1.Length - 1] = 1;
-                            res = ModPolinom(k1, K, mod); counter = 0;
-                            for (int j = 1; j < res.Length; j++) if (res[j] != 0) counter++;
-
-                            if (counter != 0 || res[0] != 1)
+                            if (K.Length > k1.Length)
+                                forNOK.Add((int)Math.Pow(x.Key, x.Value));
+                            else
                             {
-                                forNOK.Add((int)Math.Pow(x.Key, x.Value - 1));
+                                res = ModPolinom(k1, K, mod); counter = 0;
+                                for (int j = 1; j < res.Length; j++) if (res[j] != 0) counter++;
+
+                                if (counter != 0 || res[0] != 1)
+                                {
+                                    forNOK.Add((int)Math.Pow(x.Key, x.Value - 1));
+                                }
                             }
                         }
                 }
