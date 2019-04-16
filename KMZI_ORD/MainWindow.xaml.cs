@@ -113,7 +113,6 @@ namespace KMZI_ORD
         }
         private int[] ModPolinom(int[] K1, int[] K2, int mod)
         {
-            //  int deg = K1.Length - 1;
             if (K2.Length > K1.Length) throw new Exception("Степень делимого многочлена должна быть выше делителя!");
             int[] result = new int[(K1.Length - 1) - (K2.Length - 1) + 1];
             for (int i = K1.Length - 1; i >= 0; i--)
@@ -121,7 +120,7 @@ namespace KMZI_ORD
                 int[] buf = new int[K1.Length];
                 if (i >= K2.Length - 1)
                 {
-                    result[i - (K2.Length - 1)] = K1[i];//разобраться с индексом, тк в рес должно быть меньше i
+                    result[i - (K2.Length - 1)] = K1[i];
 
                     for (int k = 0; k < K2.Length; k++)
                     {
@@ -132,18 +131,10 @@ namespace KMZI_ORD
                         buf[j] = K1[j] - buf[j];
                         buf[j] = KMZI_int.numOnMod(buf[j], mod);
                     }
-                    K1 = buf;//deg = i + K2.Length - 1;
+                    K1 = buf;
                 }
             }
             Array.Reverse(result);
-            //string s = "Коэффициенты многочлена: ";
-            //for (int i = 0; i < result.Length; i++)
-            //{
-            //    s += result[i] + " ";
-            //}
-            //s += "\nКоэффициенты остатка: ";
-            //for (int i = 0; i < K1.Length; i++)
-            //    s += K1[i] + " ";
             return K1;
         }
     }
